@@ -16,6 +16,7 @@ from mcp.types import (
 from tp_mcp.auth import get_credential, validate_auth
 from tp_mcp.client.context import athlete_override
 from tp_mcp.tools import (
+    tp_add_note_comment,
     tp_add_workout_comment,
     tp_analyze_workout,
     tp_auth_status,
@@ -47,6 +48,8 @@ from tp_mcp.tools import (
     tp_get_library_items,
     tp_get_metrics,
     tp_get_next_event,
+    tp_get_note,
+    tp_get_note_comments,
     tp_get_nutrition,
     tp_get_peaks,
     tp_get_pool_length_settings,
@@ -69,6 +72,7 @@ from tp_mcp.tools import (
     tp_update_ftp,
     tp_update_hr_zones,
     tp_update_library_item,
+    tp_update_note,
     tp_update_nutrition,
     tp_update_speed_zones,
     tp_update_workout,
@@ -753,6 +757,51 @@ TOOLS = [
         },
     ),
     Tool(
+        name="tp_get_note",
+        description="Get a calendar note by ID.",
+        inputSchema={
+            "type": "object",
+            "properties": {"note_id": {"type": "string", "description": "Note ID"}},
+            "required": ["note_id"],
+        },
+    ),
+    Tool(
+        name="tp_update_note",
+        description="Update a calendar note. Provide at least one of: title, description, date, is_hidden.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "note_id": {"type": "string", "description": "Note ID"},
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "date": {"type": "string", "description": "YYYY-MM-DD"},
+                "is_hidden": {"type": "boolean"},
+            },
+            "required": ["note_id"],
+        },
+    ),
+    Tool(
+        name="tp_get_note_comments",
+        description="Get all comments on a calendar note.",
+        inputSchema={
+            "type": "object",
+            "properties": {"note_id": {"type": "string", "description": "Note ID"}},
+            "required": ["note_id"],
+        },
+    ),
+    Tool(
+        name="tp_add_note_comment",
+        description="Add a comment to a calendar note.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "note_id": {"type": "string", "description": "Note ID"},
+                "comment": {"type": "string", "description": "Comment text"},
+            },
+            "required": ["note_id", "comment"],
+        },
+    ),
+    Tool(
         name="tp_get_availability",
         description="Get availability entries for a date range.",
         inputSchema={
@@ -1184,6 +1233,26 @@ async def _h_create_note(args):
 
 @_handler("tp_delete_note")
 async def _h_delete_note(args): return await tp_delete_note(note_id=args["note_id"])
+
+@_handler("tp_get_note")
+async def _h_get_note(args): return await tp_get_note(note_id=args["note_id"])
+
+@_handler("tp_update_note")
+async def _h_update_note(args):
+    return await tp_update_note(
+        note_id=args["note_id"],
+        title=args.get("title"),
+        description=args.get("description"),
+        date=args.get("date"),
+        is_hidden=args.get("is_hidden"),
+    )
+
+@_handler("tp_get_note_comments")
+async def _h_get_note_comments(args): return await tp_get_note_comments(note_id=args["note_id"])
+
+@_handler("tp_add_note_comment")
+async def _h_add_note_comment(args):
+    return await tp_add_note_comment(note_id=args["note_id"], comment=args["comment"])
 
 @_handler("tp_get_availability")
 async def _h_get_avail(args):
