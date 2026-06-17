@@ -1,0 +1,17 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+healthcheckPath = "/sse"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+EOFcat > ~/Documents/Developer/trainingpeaks-mcp/railway.toml << 'EOF'
+[build]
+builder = "dockerfile"
+
+[deploy]
+healthcheckPath = "/sse"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
