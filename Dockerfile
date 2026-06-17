@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -e .
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "supergateway --stdio 'tp-mcp serve' --port ${PORT:-8080} --ssePath /sse --messagePath /message"]
+CMD ["sh", "-c", "supergateway --stdio 'tp-mcp serve' --port ${PORT:-8080} --ssePath /sse --messagePath /message --cors --healthEndpoints /health"]
