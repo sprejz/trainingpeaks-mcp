@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y curl gnupg && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g supergateway
+RUN npm install -g supergateway@latest
 
 WORKDIR /app
 COPY . .
@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -e .
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "supergateway --stdio 'tp-mcp serve' --port ${PORT:-8080} --ssePath /sse --messagePath /message --cors --healthEndpoints /health"]
+CMD ["sh", "-c", "supergateway --stdio 'tp-mcp serve' --port ${PORT:-8080} --ssePath /sse --messagePath /message --cors"]
