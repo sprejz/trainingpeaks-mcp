@@ -1,13 +1,16 @@
 FROM python:3.12-slim
 
+RUN apt-get update && apt-get install -y curl gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g supergateway@0.9.0
+
 WORKDIR /app
 COPY . .
-
-# .venv ignorieren, sauber installieren
-RUN pip install --no-cache-dir -e . aiohttp
-
-# tp-mcp liegt nach pip install -e . in /usr/local/bin
-RUN which tp-mcp && tp-mcp --help || echo "tp-mcp not found"
+RUN pip install --no-cache-dir -e .
 
 EXPOSE 8080
-CMD ["python3", "server.py"]
+
+CMD ["sh", "-c", "supergateway --stdio 'tp-mcp serve' --port ${PORT:-8080} --ssePath /sse --messagePath /message --cors"]
